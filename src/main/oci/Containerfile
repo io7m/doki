@@ -1,0 +1,24 @@
+ARG version
+ARG version_alpine
+ARG version_jdk
+
+FROM docker.io/library/alpine:$version_alpine
+FROM docker.io/library/eclipse-temurin:$version_jdk
+
+ENV PATH="/sbin:/bin:/usr/sbin:/usr/bin:/opt/java/openjdk/bin"
+
+LABEL "org.opencontainers.image.authors"="Mark Raynsford"
+LABEL "org.opencontainers.image.description"="Tiny, opinionated, monitorable backup script."
+LABEL "org.opencontainers.image.licenses"="ISC"
+LABEL "org.opencontainers.image.source"="https://www.github.com/io7m/doki"
+LABEL "org.opencontainers.image.title"="Doki"
+LABEL "org.opencontainers.image.url"="https://www.github.com/io7m/doki"
+LABEL "org.opencontainers.image.version"="$version"
+
+RUN apk update
+RUN apk add rsync
+RUN apk add openssh
+
+COPY lib /doki/lib
+
+ENTRYPOINT ["/opt/java/openjdk/bin/java", "-cp", "/doki/lib", "Doki"]
